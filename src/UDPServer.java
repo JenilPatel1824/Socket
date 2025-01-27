@@ -2,7 +2,6 @@ import java.net.*;
 import java.util.HashSet;
 import java.util.Set;
 
-/// udp Chat group server
 public class UDPServer {
     public static void main(String[] args) {
         try (DatagramSocket socket = new DatagramSocket(1234)) {
@@ -15,7 +14,7 @@ public class UDPServer {
             while (true) {
                 socket.receive(packet);
 
-                InetSocketAddress clientSocketAddress = new InetSocketAddress(packet.getAddress(), socket.getPort());
+                InetSocketAddress clientSocketAddress = new InetSocketAddress(packet.getAddress(), packet.getPort());
 
                 clients.add(clientSocketAddress);
 
@@ -23,8 +22,8 @@ public class UDPServer {
                 System.out.println("Client (" + packet.getAddress() + ":" + packet.getPort() + ") says: " + receivedMessage);
 
                 for (InetSocketAddress client : clients) {
-                    if (!client.equals(clientSocketAddress)) {
-                        String messageToSend = "Client (" + packet.getAddress() + ":" + socket.getPort() + "): " + receivedMessage;
+                    if (!client.equals(clientSocketAddress)) { // Skip the sender
+                        String messageToSend = "Client (" + packet.getAddress() + ":" + packet.getPort() + "): " + receivedMessage;
                         DatagramPacket relayPacket = new DatagramPacket(
                                 messageToSend.getBytes(),
                                 messageToSend.length(),
